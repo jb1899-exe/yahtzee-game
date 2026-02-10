@@ -1,3 +1,4 @@
+import time
 from modules.die import Die
 from modules.player import Player
 
@@ -69,14 +70,20 @@ class Game:
 
         reroll_attempts = 0
         while True :
-            reroll_input = input(f"\nWould you like to reroll? {reroll_attempts}/2 attempts (yes/no): ").lower()
-            if reroll_input in ['yes', 'y'] and reroll_attempts < 2:
-                reroll_attempts += 1
-                roll = self.reroll_round(roll)
-                print("\n")
-                for die, result in roll.items():
-                    print(f"Die {die.upper()} rolled {result}!")
-            elif reroll_input in ['no', 'n']:
-                break
+            if reroll_attempts < 2:
+                reroll_input = input(f"\nWould you like to reroll? {reroll_attempts}/2 attempts (yes/no): ").lower()
+                if reroll_input in ['yes', 'y']:
+                    reroll_attempts += 1
+                    roll = self.reroll_round(roll)
+                    print("\n")
+                    for die, result in roll.items():
+                        print(f"Die {die.upper()} rolled {result}!")
+                elif reroll_input in ['no', 'n']:
+                    break
+                else:
+                    print("Please enter a valid response!")
             else:
-                print("Please enter a valid response!")
+                time.sleep(1)
+                print("\nYou have used all your rerolls!")
+                break
+                
