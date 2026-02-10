@@ -6,21 +6,6 @@ from modules.player import Player
 class Game:
     def __init__(self):
         self.player_names = []
-        self.score_categories = (
-            "ones", 
-            "twos", 
-            "threes", 
-            "fours", 
-            "fives", 
-            "sixes",
-            "three_of_a_kind", 
-            "four_of_a_kind", 
-            "full_house",
-            "small_straight", 
-            "large_straight", 
-            "yahtzee", 
-            "chance"
-        )
 
     def update_player_names(self):
         while True:
@@ -62,11 +47,21 @@ class Game:
 
         dice_result = self.roll_round(initial_roll, id_reroll)
         return dice_result
+    
+    def upper_or_lower(self, player, roll):
+
+        while True:
+            upper_lower_input = input("Would you like to score upper or lower? (upper/lower): ").lower()
+            if upper_lower_input in ['upper', 'u']:
+                pass
+            elif upper_lower_input in ['lower', 'l']:
+                pass
+            else:
+                print("Please enter a valid response!")
                 
     def play_round(self, player = None):
         roll = self.roll_round(dice_result = {}) 
-        for die, result in roll.items():
-            print(f"Die {die.upper()} rolled {result}!")
+        print(f"\nYour roll: {', '.join(f"{die_id.title()}: {die_val}" for die_id, die_val in roll.items())}")
 
         reroll_attempts = 0
         while True :
@@ -75,10 +70,9 @@ class Game:
                 if reroll_input in ['yes', 'y']:
                     reroll_attempts += 1
                     roll = self.reroll_round(roll)
-                    print("\n")
-                    for die, result in roll.items():
-                        print(f"Die {die.upper()} rolled {result}!")
+                    print(f"\nYour roll: {', '.join(f"{die_id.title()}: {die_val}" for die_id, die_val in roll.items())}")
                 elif reroll_input in ['no', 'n']:
+                    self.upper_or_lower(player, roll)
                     break
                 else:
                     print("Please enter a valid response!")
@@ -87,3 +81,4 @@ class Game:
                 print("\nYou have used all your rerolls!")
                 break
                 
+    
