@@ -11,7 +11,7 @@ class Game:
 
     
     def update_player_names(self):
-        ''''''
+        '''Updates list of player names as inputted in-game by players.'''
 
         while True:
             new_player_response = input("Would you like to enter a player name (yes/no)?: ")
@@ -27,7 +27,7 @@ class Game:
                  
 
     def get_player_names(self):
-        ''''''
+        '''Retrurns names of all active players as entered in-game.'''
 
         return self.player_names
     
@@ -63,7 +63,7 @@ class Game:
         return dice_result
     
     
-    def upper_or_lower(self, player: str, roll: dict[str, int]) -> None:
+    def upper_or_lower(self, player: 'Player', roll: dict[str, int]) -> None:
         '''Contains functionality for allowing player to select upper or lower scoring rules.'''
 
         while True:
@@ -76,24 +76,9 @@ class Game:
                 break
             else:
                 print("\nPlease enter a valid response!")
-                
-    def play_upper(self, player: str, roll: dict[str, int]) -> None:
 
-        score_categories = (
-            "ones", 
-            "twos", 
-            "threes", 
-            "fours", 
-            "fives", 
-            "sixes",
-            "three_of_a_kind", 
-            "four_of_a_kind", 
-            "full_house",
-            "small_straight", 
-            "large_straight", 
-            "yahtzee", 
-            "chance"
-        )
+                
+    def play_upper(self, player: 'Player', roll: dict[str, int]) -> None:
 
         die_roll_values = {
             # key: die face value
@@ -105,7 +90,7 @@ class Game:
             5: 0, 
             6: 0
         }
-
+        # TODO: find iterable way of doing this
         for value in roll.values():
             if value == 1:
                 die_roll_values[1] += 1
@@ -121,13 +106,35 @@ class Game:
                 die_roll_values[6] += 1
 
         upper_scores = {key: key * value for key, value in die_roll_values.items()}
-        print(f"\nYou scored: {sum(upper_scores.values())}!")
+
+        player_scores = {}
+        for key, value in upper_scores.items():
+            if key == 1:
+                player_scores['ones'] = value
+            elif key == 2:
+                player_scores['twos'] = value
+            elif key == 3:
+                player_scores['threes'] = value
+            elif key == 4:
+                player_scores['fours'] = value
+            elif key == 5:
+                player_scores['fives'] = value
+            elif key == 6:
+                player_scores['sixes'] = value
+
+        
+        print(f"\nYou scored: {', '.join(f"{key.title()}: {value}" for key, value in player_scores.items())}")
+        print(f"Total upper: {player.upper_scores}")
+        # TODO: Add logic to update player score here
+        player.add_upper_scores(player_scores)
+        
             
         
-    def play_lower(self, player: str, roll: dict[str, int]) -> None:
+    def play_lower(self, player: 'Player', roll: dict[str, int]) -> None:
         pass
     
-    def play_round(self, player: str) -> None:
+
+    def play_round(self, player: 'Player') -> None:
         '''Contains functionality for player to play each round.'''
 
         roll = self.roll_round(dice_result = {}) 
@@ -147,7 +154,6 @@ class Game:
                 else:
                     print("Please enter a valid response!")
             else:
-                time.sleep(1)
                 print("\nYou have used all your rerolls!")
                 break
                 
