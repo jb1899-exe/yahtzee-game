@@ -4,7 +4,7 @@ from modules.player import Player
 
 
 class Game:
-    ''''''
+    '''Controls logic of Yahtzee game.'''
 
     def __init__(self):
         self.player_names: list = []
@@ -15,7 +15,7 @@ class Game:
 
         while True:
             new_player_response = input("Would you like to enter a player name (yes/no)?: ")
-            if new_player_response.lower() in['yes', 'y']:
+            if new_player_response.lower() in ['yes', 'y']:
                 while True:
                     name_response = input("Please enter a player name: ")
                     self.player_names.append(name_response)
@@ -48,7 +48,7 @@ class Game:
         ''''''
 
         id_reroll = []
-        for id in ['a', 'b', 'c', 'd']:
+        for id in ['a', 'b', 'c', 'd', 'e']:
             while True:
                 id_reroll_input = input(f"Would you like to reroll '{id.upper()}'? (yes/no): ").lower()
                 if id_reroll_input in ['yes', 'y']:
@@ -79,6 +79,7 @@ class Game:
 
                 
     def play_upper(self, player: 'Player', roll: dict[str, int]) -> None:
+        '''Scores roll with upper scoring rules and updates player scores.'''
 
         die_roll_values = {
             # key: die face value
@@ -122,17 +123,66 @@ class Game:
             elif key == 6:
                 player_scores['sixes'] = value
 
-        
-        print(f"\nYou scored: {', '.join(f"{key.title()}: {value}" for key, value in player_scores.items())}")
-        print(f"Total upper: {player.upper_scores}")
-        # TODO: Add logic to update player score here
+        # TODO: Find more efficient way of doing this. Only calculate score for unused categories.
+        for key, value in player.used_upper_categories.items():
+            if value is True:
+                del player_scores[key]
+
+
+        # TODO: Must only show unused score categories!
+        print("\nYou scored:")
+        for key, value in player_scores.items():
+            if value != 0:
+                print(f"{key.title()}: {value}")
+
         player.add_upper_scores(player_scores)
-        
             
         
     def play_lower(self, player: 'Player', roll: dict[str, int]) -> None:
+        '''Scores roll with lower scoring rules and updates player scores.'''
+
+        # TODO: rework lower scoring
         pass
     
+        # die_roll_values = {
+        #     # key: die face value
+        #     # value: count of face rolls
+        #     1: 0, 
+        #     2: 0, 
+        #     3: 0, 
+        #     4: 0, 
+        #     5: 0, 
+        #     6: 0
+        # }
+        # # TODO: find iterable way of doing this
+        # for value in roll.values():
+        #     if value == 1:
+        #         die_roll_values[1] += 1
+        #     elif value == 2:
+        #         die_roll_values[2] += 1
+        #     elif value == 3:
+        #         die_roll_values[3] += 1
+        #     elif value == 4:
+        #         die_roll_values[4] += 1
+        #     elif value == 5:
+        #         die_roll_values[5] += 1
+        #     elif value == 6:
+        #         die_roll_values[6] += 1
+        
+        # if len(set(die_roll_values.values())) == 1:
+        #     # yahtzee
+        #     print("\nYou scored a Yahtzee!")
+        # elif (1, 2, 3, 4) or (2, 3, 4, 5) or (3, 4, 5, 6) in list(die_roll_values.values()):
+        #     # small straight
+        #     print("\nYou scored a small straight!")
+        # elif (1, 2, 3, 4, 5) or (2, 3, 4, 5, 6) in list(die_roll_values.values()):
+        #     # large straight
+        #     print("\nYou scored a large straight!")
+        # else:
+        #     # chance
+        #     sum(die_roll_values.values())
+        #     print("\nYou scored a chance!")
+
 
     def play_round(self, player: 'Player') -> None:
         '''Contains functionality for player to play each round.'''
