@@ -123,17 +123,12 @@ class Game:
             elif key == 6:
                 player_scores['sixes'] = value
 
-        # TODO: Find more efficient way of doing this. Only calculate score for unused categories.
+        # TODO: Find more efficient way of only showing availible categories.
+        # Only calculate score for unused categories.
+
         for key, value in player.used_upper_categories.items():
             if value is True:
                 del player_scores[key]
-
-
-        # TODO: Must only show unused score categories!
-        print("\nYou scored:")
-        for key, value in player_scores.items():
-            if value != 0:
-                print(f"{key.title()}: {value}")
 
         player.add_upper_scores(player_scores)
             
@@ -154,7 +149,6 @@ class Game:
         #     5: 0, 
         #     6: 0
         # }
-        # # TODO: find iterable way of doing this
         # for value in roll.values():
         #     if value == 1:
         #         die_roll_values[1] += 1

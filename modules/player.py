@@ -63,6 +63,11 @@ class Player:
         for category in unused_categories:
             if category in scored_categories.intersection(unused_categories):
                 availible_categories.append(category)
+
+        print("\nYou may score:")
+        for key, value in new_scores.items():
+            if value != 0 and key in availible_categories:
+                print(f"{key.title()}: {value}")
        
         while True:
             upper_category_input = (input(f"\nPlease select a score category! ({', '.join(f"{item.title()}" for item in availible_categories)}): ").lower())
@@ -70,12 +75,8 @@ class Player:
             if upper_category_input in availible_categories:
                 print(f"\nYou selected {upper_category_input.title()}")
                 self.upper_scores[upper_category_input] = new_scores[upper_category_input]
-
-                # TODO: Only show score categories player can actually use!
                 print(f"\nYou scored {self.upper_scores[upper_category_input]} points!")
-                
                 self.used_upper_categories[upper_category_input] = True
-
                 break
             else:
                 print("\nPlease enter a valid response!")
