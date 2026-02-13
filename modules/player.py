@@ -52,6 +52,15 @@ class Player:
 
         scored_categories = {key: value for key, value in new_scores.items() if value != 0}
         return scored_categories
+    
+
+    def get_player_score_total(self):
+        '''Returns player's total score.'''
+
+        upper_total = sum(self.upper_scores.values())
+        lower_total = sum(self.lower_scores.values())
+        player_total = upper_total + lower_total
+        return player_total
 
 
     def add_upper_scores(self, new_scores):
@@ -80,3 +89,9 @@ class Player:
                 break
             else:
                 print("\nPlease enter a valid response!")
+
+    
+    def add_lower_scores(self, new_scores):
+        '''Updates player lower scores with new scores.'''
+
+        pass

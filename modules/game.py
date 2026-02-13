@@ -1,7 +1,7 @@
 import time
 from modules.die import Die
 from modules.player import Player
-
+from collections import Counter
 
 class Game:
     '''Controls logic of Yahtzee game.'''
@@ -125,7 +125,6 @@ class Game:
 
         # TODO: Find more efficient way of only showing availible categories.
         # Only calculate score for unused categories.
-
         for key, value in player.used_upper_categories.items():
             if value is True:
                 del player_scores[key]
@@ -136,46 +135,71 @@ class Game:
     def play_lower(self, player: 'Player', roll: dict[str, int]) -> None:
         '''Scores roll with lower scoring rules and updates player scores.'''
 
-        # TODO: rework lower scoring
-        pass
-    
-        # die_roll_values = {
-        #     # key: die face value
-        #     # value: count of face rolls
-        #     1: 0, 
-        #     2: 0, 
-        #     3: 0, 
-        #     4: 0, 
-        #     5: 0, 
-        #     6: 0
-        # }
-        # for value in roll.values():
-        #     if value == 1:
-        #         die_roll_values[1] += 1
-        #     elif value == 2:
-        #         die_roll_values[2] += 1
-        #     elif value == 3:
-        #         die_roll_values[3] += 1
-        #     elif value == 4:
-        #         die_roll_values[4] += 1
-        #     elif value == 5:
-        #         die_roll_values[5] += 1
-        #     elif value == 6:
-        #         die_roll_values[6] += 1
-        
-        # if len(set(die_roll_values.values())) == 1:
-        #     # yahtzee
-        #     print("\nYou scored a Yahtzee!")
-        # elif (1, 2, 3, 4) or (2, 3, 4, 5) or (3, 4, 5, 6) in list(die_roll_values.values()):
-        #     # small straight
-        #     print("\nYou scored a small straight!")
-        # elif (1, 2, 3, 4, 5) or (2, 3, 4, 5, 6) in list(die_roll_values.values()):
-        #     # large straight
-        #     print("\nYou scored a large straight!")
-        # else:
-        #     # chance
-        #     sum(die_roll_values.values())
-        #     print("\nYou scored a chance!")
+        def contains_straight(roll_vals, type):
+            '''Returns True if straight present, depending on large or small argument.'''
+            
+            roll_vals = set(roll_vals)
+            if type.lower() == 'small':
+                return (
+                    {1, 2, 3, 4}.issubset(roll_vals) or
+                    {2, 3, 4, 5}.issubset(roll_vals) or
+                    {3, 4, 5, 6}.issubset(roll_vals)
+                )
+            elif type.lower() == 'large':
+                return (
+                    {1, 2, 3, 4, 5}.issubset(roll_vals) or
+                    {2, 3, 4, 5, 6}.issubset(roll_vals)
+                )
+            else:
+                return False
+
+
+        die_roll_values = {
+            # key: die face value
+            # value: count of face rolls
+            1: 0, 
+            2: 0, 
+            3: 0, 
+            4: 0, 
+            5: 0, 
+            6: 0
+        }
+        for value in roll.values():
+            if value == 1:
+                die_roll_values[1] += 1
+            elif value == 2:
+                die_roll_values[2] += 1
+            elif value == 3:
+                die_roll_values[3] += 1
+            elif value == 4:
+                die_roll_values[4] += 1
+            elif value == 5:
+                die_roll_values[5] += 1
+            elif value == 6:
+                die_roll_values[6] += 1
+
+        roll_vals = die_roll_values.values()
+        if len(set(roll_vals)) == 1:
+            # yahtzee
+            print("\nYou scored a Yahtzee!")
+        elif sorted(Counter(roll_vals).values()) == [2, 3]: # TODO: Do I need sorted here? Why not use 'in'.
+            # full house
+            print("\nYou scored a Full House!")
+        elif contains_straight(roll_vals, type = 'small'):
+            # small straight
+            print("\nYou scored a small straight!")
+        elif contains_straight(roll_vals, type = 'large'):
+            # large straight
+            print("\nYou scored a large straight!")
+        else:
+            # chance
+            sum(roll_vals)
+            print("\nYou scored a chance!")
+
+        # for key, value in player.used_lower_categories.items():
+        #     if value is True:
+        #         del player_scores[key]
+        # player.add_lower_scores(player_scores)
 
 
     def play_round(self, player: 'Player') -> None:
@@ -199,6 +223,4 @@ class Game:
                     print("Please enter a valid response!")
             else:
                 print("\nYou have used all your rerolls!")
-                break
-                
-    
+                break    
