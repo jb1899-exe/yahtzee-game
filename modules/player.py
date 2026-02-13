@@ -1,3 +1,6 @@
+from collections import Counter
+
+
 class Player:
     '''Controls player scoring logic.'''
 
@@ -91,7 +94,46 @@ class Player:
                 print("\nPlease enter a valid response!")
 
     
-    def add_lower_scores(self, new_scores):
+    def add_lower_scores(self, roll_counts, roll_values):
         '''Updates player lower scores with new scores.'''
 
-        pass
+        if len(set(roll_values)) == 1:
+            print("\nYou scored a Yahtzee!")
+        elif {2, 3} == set(Counter(roll_counts).values()): # TODO: Do I need sorted here? Why not use 'in'.
+            print("\nYou scored a Full House!")
+        elif 3 in Counter(roll_counts).values():
+            print("\nYou scored a Three of a Kind!")
+        elif 4 in Counter(roll_counts).values():
+            print("\nYou scored a Four of a Kind!")
+        elif self.contains_straight(roll_values, type = 'small'):
+            print("\nYou scored a small straight!")
+        elif self.contains_straight(roll_values, type = 'large'):
+            print("\nYou scored a large straight!")
+        else:
+            sum(roll_values)
+            print("\nYou scored a chance!")
+
+        # TODO: Present player options to choose from!
+        # for key, value in player.used_lower_categories.items():
+        #     if value is True:
+        #         del player_scores[key]
+        # player.add_lower_scores(player_scores)
+
+    
+    def contains_straight(self, roll_vals, type):
+        '''Returns True if straight present, depending on large or small argument.'''
+        
+        roll_vals = set(roll_vals)
+        if type.lower() == 'small':
+            return (
+                {1, 2, 3, 4}.issubset(roll_vals) or
+                {2, 3, 4, 5}.issubset(roll_vals) or
+                {3, 4, 5, 6}.issubset(roll_vals)
+            )
+        elif type.lower() == 'large':
+            return (
+                {1, 2, 3, 4, 5}.issubset(roll_vals) or
+                {2, 3, 4, 5, 6}.issubset(roll_vals)
+            )
+        else:
+            return False
