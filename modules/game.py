@@ -81,7 +81,7 @@ class Game:
     def play_upper(self, player: 'Player', roll: dict[str, int]) -> None:
         '''Scores roll with upper scoring rules and updates player scores.'''
 
-        die_roll_values = {
+        die_roll_counts = {
             # key: die face value
             # value: count of face rolls
             1: 0, 
@@ -94,19 +94,19 @@ class Game:
         # TODO: find iterable way of doing this
         for value in roll.values():
             if value == 1:
-                die_roll_values[1] += 1
+                die_roll_counts[1] += 1
             elif value == 2:
-                die_roll_values[2] += 1
+                die_roll_counts[2] += 1
             elif value == 3:
-                die_roll_values[3] += 1
+                die_roll_counts[3] += 1
             elif value == 4:
-                die_roll_values[4] += 1
+                die_roll_counts[4] += 1
             elif value == 5:
-                die_roll_values[5] += 1
+                die_roll_counts[5] += 1
             elif value == 6:
-                die_roll_values[6] += 1
+                die_roll_counts[6] += 1
 
-        upper_scores = {key: key * value for key, value in die_roll_values.items()}
+        upper_scores = {key: key * value for key, value in die_roll_counts.items()}
 
         player_scores = {}
         for key, value in upper_scores.items():
@@ -136,7 +136,7 @@ class Game:
         '''Scores roll with lower scoring rules and updates player scores.'''
 
         # TODO: make counter function?
-        die_roll_values = {
+        die_roll_counts = {
             # key: die face value
             # value: count of face rolls
             1: 0, 
@@ -148,20 +148,20 @@ class Game:
         }
         for value in roll.values():
             if value == 1:
-                die_roll_values[1] += 1
+                die_roll_counts[1] += 1
             elif value == 2:
-                die_roll_values[2] += 1
+                die_roll_counts[2] += 1
             elif value == 3:
-                die_roll_values[3] += 1
+                die_roll_counts[3] += 1
             elif value == 4:
-                die_roll_values[4] += 1
+                die_roll_counts[4] += 1
             elif value == 5:
-                die_roll_values[5] += 1
+                die_roll_counts[5] += 1
             elif value == 6:
-                die_roll_values[6] += 1
+                die_roll_counts[6] += 1
 
         player.add_lower_scores(
-            roll_counts = die_roll_values.values(), 
+            roll_counts = die_roll_counts.values(), 
             roll_values = roll.values()
         )
 
