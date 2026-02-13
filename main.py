@@ -11,12 +11,15 @@ def main():
     if players:
         for round in range(1, 14):
             print(f"\n\nRound {round}!")
-            # time.sleep(1)
+
+            for player in players:
+                print(f"{player.name.title()} total score: {player.get_player_score_total()}")
+
+            time.sleep(1)
             for player in players:
                 print(f"\n\nPlayer {player.name.title()}, it's your turn!")
-                # time.sleep(1)
+                time.sleep(1)
                 game.play_round(player)
-                # TODO: Print user's score at end of each round
     else:
         print("Quitting game...\n")
 
