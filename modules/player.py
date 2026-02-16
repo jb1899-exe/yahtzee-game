@@ -74,61 +74,81 @@ class Player:
         return player_total
 
 
-    def add_upper_scores(self, new_scores):
-        '''Updates player upper scores with new scores.'''
+    # def add_upper_scores(self, new_scores):
+    #     '''Updates player upper scores with new scores.'''
 
-        unused_categories = set(self.get_availible_upper_categories().keys())
-        scored_categories = set(self.get_scored_categories(new_scores).keys())
-        availible_categories = list()
-        for category in unused_categories:
-            if category in scored_categories.intersection(unused_categories):
-                availible_categories.append(category)
+    #     unused_categories = set(self.get_availible_upper_categories().keys())
+    #     scored_categories = set(self.get_scored_categories(new_scores).keys())
+    #     availible_categories = list()
+    #     for category in unused_categories:
+    #         if category in scored_categories.intersection(unused_categories):
+    #             availible_categories.append(category)
+
+    #     print("\nYou may score:")
+    #     for key, value in new_scores.items():
+    #         if value != 0 and key in availible_categories:
+    #             print(f"{key.title()}: {value}")
+       
+    #     while True:
+    #         upper_category_input = (input(f"\nPlease select a score category! ({', '.join(f"{item.title()}" for item in availible_categories)}): ").lower())
+                        
+    #         if upper_category_input in availible_categories:
+    #             print(f"\nYou selected {upper_category_input.title()}")
+    #             self.upper_scores[upper_category_input] = new_scores[upper_category_input]
+    #             print(f"\nYou scored {self.upper_scores[upper_category_input]} points!")
+    #             self.used_upper_categories[upper_category_input] = True
+    #             break
+    #         else:
+    #             print("\nPlease enter a valid response!")
+
+
+    # def add_lower_scores(self, new_scores):
+    #     '''Presents player scoring options and updates lower scores with new scores.'''
+
+    #     print("\nYou may score:")
+    #     for key, value in new_scores.items():
+    #             print(f"{key.title()}: {value}")
+    #     while True:
+    #         lower_category_input = input(f"\nPlease select a score category! ({', '.join(f"{item.title()}" for item in new_scores.keys())}): ").lower()
+    #         if lower_category_input in new_scores.keys():
+    #             print(f"\nYou selected {lower_category_input.title()}")
+    #             print(new_scores[lower_category_input])
+    #             self.lower_scores[lower_category_input] = new_scores[lower_category_input]
+    #             print(f"\nYou scored {self.lower_scores[lower_category_input]} points!")
+    #             self.used_lower_categories[lower_category_input] = True
+    #             break
+    #         else:
+    #             print("\nPlease enter a valid response!")
+
+
+    def add_scores(self, new_scores, category):
+        '''Presents player scoring options and updates scores with new scores.'''
+
 
         print("\nYou may score:")
         for key, value in new_scores.items():
-            if value != 0 and key in availible_categories:
                 print(f"{key.title()}: {value}")
-       
-        while True:
-            upper_category_input = (input(f"\nPlease select a score category! ({', '.join(f"{item.title()}" for item in availible_categories)}): ").lower())
-                        
-            if upper_category_input in availible_categories:
-                print(f"\nYou selected {upper_category_input.title()}")
-                self.upper_scores[upper_category_input] = new_scores[upper_category_input]
-                print(f"\nYou scored {self.upper_scores[upper_category_input]} points!")
-                self.used_upper_categories[upper_category_input] = True
-                break
-            else:
-                print("\nPlease enter a valid response!")
-
-    
-    def add_lower_scores(self, new_scores):
-        '''Updates player lower scores with new scores.'''
-
-        unused_categories = set(self.get_availible_lower_categories().keys())
-        scored_categories = set(self.get_scored_categories(new_scores).keys())
-
-        availible_categories = list()
-        for category in unused_categories:
-            if category in scored_categories.intersection(unused_categories):
-                availible_categories.append(category)
-
-        print("\nYou may score:")
-        for key, value in new_scores.items():
-            if value != 0 and key in availible_categories:
-                print(f"{key.title()}: {value}")
-       
-        while True:
-            lower_category_input = (input(f"\nPlease select a score category! ({', '.join(f"{item.title()}" for item in availible_categories)}): ").lower())
-                        
-            if lower_category_input in availible_categories:
-                print(f"\nYou selected {lower_category_input.title()}")
-                print(new_scores[lower_category_input])
-                self.lower_scores[lower_category_input] = new_scores[lower_category_input]
-                print(f"\nYou scored {self.lower_scores[lower_category_input]} points!")
-                self.used_lower_categories[lower_category_input] = True
-                break
-            else:
-                print("\nPlease enter a valid response!")
-
-        print(new_scores)
+        if category.lower() == "lower":
+            while True:
+                lower_category_input = input(f"\nPlease select a score category! ({', '.join(f"{item.title()}" for item in new_scores.keys())}): ").lower()
+                if lower_category_input in new_scores.keys():
+                    print(f"\nYou selected {lower_category_input.title()}")
+                    print(new_scores[lower_category_input])
+                    self.lower_scores[lower_category_input] = new_scores[lower_category_input]
+                    print(f"\nYou scored {self.lower_scores[lower_category_input]} points!")
+                    self.used_lower_categories[lower_category_input] = True
+                    break
+                else:
+                    print("\nPlease enter a valid response!")
+        elif category.lower() == "upper":
+            while True:
+                upper_category_input = input(f"\nPlease select a score category! ({', '.join(f"{item.title()}" for item in new_scores.keys())}): ").lower()
+                if upper_category_input in new_scores.keys():
+                    print(f"\nYou selected {upper_category_input.title()}")
+                    print(new_scores[upper_category_input])
+                    self.lower_scores[upper_category_input] = new_scores[upper_category_input]
+                    print(f"\nYou scored {self.lower_scores[upper_category_input]} points!")
+                    self.used_lower_categories[upper_category_input] = True
+                    break
+                else:
+                    print("\nPlease enter a valid response!")
