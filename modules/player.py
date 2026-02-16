@@ -1,6 +1,3 @@
-
-
-
 class Player:
     '''Controls player scoring logic.'''
 
@@ -42,21 +39,33 @@ class Player:
         }
 
 
-    def get_availible_upper_categories(self):
-        '''Returns upper scoring categories that have no yet been used in-game by player.'''
+    # def get_availible_upper_categories(self):
+    #     '''Returns upper scoring categories that have no yet been used in-game by player.'''
         
-        # TODO: Make this work for upper/lower
-        availible_categories = {key: value for key, value in self.used_upper_categories.items() if value is False}
-        return availible_categories
+    #     availible_categories = {key: value for key, value in self.used_upper_categories.items() if value is False}
+    #     return availible_categories
     
 
-    def get_availible_lower_categories(self):
-        '''Returns lower scoring categories that have no yet been used in-game by player.'''
+    # def get_availible_lower_categories(self):
+    #     '''Returns lower scoring categories that have no yet been used in-game by player.'''
 
-        # TODO: Make this work for upper/lower
-        availible_categories = {key: value for key, value in self.used_lower_categories.items() if value is False}
-        return availible_categories
+    #     availible_categories = {key: value for key, value in self.used_lower_categories.items() if value is False}
+    #     return availible_categories
     
+
+    def get_availible_categories(self, category: str) -> dict[str, bool] | None:
+        '''Returns scoring categories that have no yet been used in-game by player.'''
+
+        if category.lower() == "lower":
+            availible_categories = {key: value for key, value in self.used_lower_categories.items() if value is False}
+            return availible_categories
+        elif category.lower() == "upper":
+            availible_categories = {key: value for key, value in self.used_upper_categories.items() if value is False}
+            return availible_categories
+        else:
+            print("Please enter a valid category!")
+            return None
+
 
     def get_scored_categories(self, new_scores):
         '''Returns categories scored by player in a round.'''
@@ -121,7 +130,8 @@ class Player:
     #             print("\nPlease enter a valid response!")
 
 
-    def add_scores(self, new_scores, category):
+    # TODO: reduce repetition
+    def add_scores(self, new_scores: dict[str, int], category: str) -> None:
         '''Presents player scoring options and updates scores with new scores.'''
 
 
@@ -152,3 +162,5 @@ class Player:
                     break
                 else:
                     print("\nPlease enter a valid response!")
+        else:
+            print("Please enter a valid category!")
