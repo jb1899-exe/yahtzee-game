@@ -1,0 +1,1 @@
+when no options are availible, player must be notified and not score.

@@ -1,4 +1,4 @@
-from collections import Counter
+
 
 
 class Player:
@@ -43,10 +43,18 @@ class Player:
 
 
     def get_availible_upper_categories(self):
-        '''Returns scoring categories that have no yet been used in-game by player.'''
+        '''Returns upper scoring categories that have no yet been used in-game by player.'''
         
         # TODO: Make this work for upper/lower
         availible_categories = {key: value for key, value in self.used_upper_categories.items() if value is False}
+        return availible_categories
+    
+
+    def get_availible_lower_categories(self):
+        '''Returns lower scoring categories that have no yet been used in-game by player.'''
+
+        # TODO: Make this work for upper/lower
+        availible_categories = {key: value for key, value in self.used_lower_categories.items() if value is False}
         return availible_categories
     
 
@@ -94,46 +102,33 @@ class Player:
                 print("\nPlease enter a valid response!")
 
     
-    def add_lower_scores(self, roll_counts, roll_values):
+    def add_lower_scores(self, new_scores):
         '''Updates player lower scores with new scores.'''
 
-        if len(set(roll_values)) == 1:
-            print("\nYou scored a Yahtzee!")
-        elif {2, 3} == set(Counter(roll_counts).values()): # TODO: Do I need sorted here? Why not use 'in'.
-            print("\nYou scored a Full House!")
-        elif 3 in Counter(roll_counts).values():
-            print("\nYou scored a Three of a Kind!")
-        elif 4 in Counter(roll_counts).values():
-            print("\nYou scored a Four of a Kind!")
-        elif self.contains_straight(roll_values, type = 'small'):
-            print("\nYou scored a small straight!")
-        elif self.contains_straight(roll_values, type = 'large'):
-            print("\nYou scored a large straight!")
-        else:
-            sum(roll_values)
-            print("\nYou scored a chance!")
+        unused_categories = set(self.get_availible_lower_categories().keys())
+        scored_categories = set(self.get_scored_categories(new_scores).keys())
 
-        # TODO: Present player options to choose from!
-        # for key, value in player.used_lower_categories.items():
-        #     if value is True:
-        #         del player_scores[key]
-        # player.add_lower_scores(player_scores)
+        availible_categories = list()
+        for category in unused_categories:
+            if category in scored_categories.intersection(unused_categories):
+                availible_categories.append(category)
 
-    
-    def contains_straight(self, roll_vals, type):
-        '''Returns True if straight present, depending on large or small argument.'''
-        
-        roll_vals = set(roll_vals)
-        if type.lower() == 'small':
-            return (
-                {1, 2, 3, 4}.issubset(roll_vals) or
-                {2, 3, 4, 5}.issubset(roll_vals) or
-                {3, 4, 5, 6}.issubset(roll_vals)
-            )
-        elif type.lower() == 'large':
-            return (
-                {1, 2, 3, 4, 5}.issubset(roll_vals) or
-                {2, 3, 4, 5, 6}.issubset(roll_vals)
-            )
-        else:
-            return False
+        print("\nYou may score:")
+        for key, value in new_scores.items():
+            if value != 0 and key in availible_categories:
+                print(f"{key.title()}: {value}")
+       
+        while True:
+            lower_category_input = (input(f"\nPlease select a score category! ({', '.join(f"{item.title()}" for item in availible_categories)}): ").lower())
+                        
+            if lower_category_input in availible_categories:
+                print(f"\nYou selected {lower_category_input.title()}")
+                print(new_scores[lower_category_input])
+                self.lower_scores[lower_category_input] = new_scores[lower_category_input]
+                print(f"\nYou scored {self.lower_scores[lower_category_input]} points!")
+                self.used_lower_categories[lower_category_input] = True
+                break
+            else:
+                print("\nPlease enter a valid response!")
+
+        print(new_scores)

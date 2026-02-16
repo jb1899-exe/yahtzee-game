@@ -1,5 +1,6 @@
 import time
 from modules.die import Die
+from collections import Counter
 from modules.player import Player
 
 
@@ -61,6 +62,26 @@ class Game:
 
         dice_result = self.roll_round(initial_roll, id_reroll)
         return dice_result
+
+
+    # @staticmethod
+    def contains_straight(self, roll_vals, type):
+        '''Returns True if straight present, depending on large or small argument.'''
+        
+        roll_vals = set(roll_vals)
+        if type.lower() == 'small':
+            return (
+                {1, 2, 3, 4}.issubset(roll_vals) or
+                {2, 3, 4, 5}.issubset(roll_vals) or
+                {3, 4, 5, 6}.issubset(roll_vals)
+            )
+        elif type.lower() == 'large':
+            return (
+                {1, 2, 3, 4, 5}.issubset(roll_vals) or
+                {2, 3, 4, 5, 6}.issubset(roll_vals)
+            )
+        else:
+            return False
     
     
     def upper_or_lower(self, player: 'Player', roll: dict[str, int]) -> None:
@@ -124,13 +145,14 @@ class Game:
                 player_scores['sixes'] = value
 
         # TODO: Find more efficient way of only showing availible categories.
-        # Only calculate score for unused categories.
-        for key, value in player.used_upper_categories.items():
-            if value is True:
-                del player_scores[key]
-
-        player.add_upper_scores(player_scores)
-            
+        valid_scores = {
+            category: score 
+            for category, score
+            in player_scores.items()
+            if not player.used_upper_categories.get(category, False)
+        }
+        player.add_upper_scores(valid_scores)
+        
         
     def play_lower(self, player: 'Player', roll: dict[str, int]) -> None:
         '''Scores roll with lower scoring rules and updates player scores.'''
@@ -160,10 +182,40 @@ class Game:
             elif value == 6:
                 die_roll_counts[6] += 1
 
-        player.add_lower_scores(
-            roll_counts = die_roll_counts.values(), 
-            roll_values = roll.values()
-        )
+        roll_counts = list(die_roll_counts.values())
+        roll_values = list(roll.values())
+        
+        player_scores = {
+            "three_of_a_kind": 0, 
+            "four_of_a_kind": 0, 
+            "full_house": 0,
+            "small_straight": 0, 
+            "large_straight": 0, 
+            "yahtzee": 0, 
+            "chance": sum(roll_values)
+        }
+        if len(set(roll_values)) == 1:
+            player_scores['yahtzee'] = 50
+        if set(Counter(roll_counts).values()) == [2, 3]:
+            player_scores['full_house'] = 25
+        if 3 in Counter(roll_counts).values():
+            player_scores['three_of_a_kind'] = sum(roll_values)
+        if 4 in Counter(roll_counts).values():
+            player_scores['four_of_a_kind'] = sum(roll_values)
+        if self.contains_straight(roll_values, type = 'small'):
+            player_scores['small_straight'] = 30
+        if self.contains_straight(roll_values, type = 'large'):
+            player_scores['large_straight'] = 40
+            
+        # TODO: Present player options to choose from!
+        valid_scores = {
+            category: score 
+            for category, score
+            in player_scores.items()
+            if not player.used_lower_categories.get(category, False)
+            # and score > 0 TODO: Replaces logic in add_scores for checking if valid?
+        }
+        player.add_lower_scores(player_scores)
 
 
     def play_round(self, player: 'Player') -> None:
@@ -187,4 +239,5 @@ class Game:
                     print("Please enter a valid response!")
             else:
                 print("\nYou have used all your rerolls!")
+                self.upper_or_lower(player, roll)
                 break    
