@@ -49,7 +49,7 @@ class Game:
     def reroll_round(self, initial_roll: dict[str, int]) -> dict[str, int]:
         ''''''
 
-        id_reroll = []
+        id_reroll = list()
         for id in ['a', 'b', 'c', 'd', 'e']:
             while True:
                 id_reroll_input = input(f"Would you like to reroll '{id.upper()}'? (yes/no): ").lower()
@@ -61,7 +61,7 @@ class Game:
                 else:
                     print("Please enter a valid response!")
 
-        dice_result = self.roll_round(initial_roll, id_reroll)
+        dice_result = self.roll_round(dice_result = initial_roll, to_roll = id_reroll)
         return dice_result
 
 
@@ -69,7 +69,6 @@ class Game:
     def contains_straight(roll_vals: set[int], type: str) -> bool:
         '''Returns True if straight present, depending on large or small argument.'''
         
-        # roll_vals = set(roll_vals)
         if type.lower() == 'small':
             return (
                 {1, 2, 3, 4}.issubset(roll_vals) or
@@ -91,10 +90,10 @@ class Game:
         while True:
             upper_lower_input = input("\nWould you like to score upper or lower? (upper/lower): ").lower()
             if upper_lower_input in ['upper', 'u']:
-                self.play_upper(player, roll)
+                self.play_upper(player = player, roll = roll)
                 break
             elif upper_lower_input in ['lower', 'l']:
-                self.play_lower(player, roll)
+                self.play_lower(player = player, roll = roll)
                 break
             else:
                 print("\nPlease enter a valid response!")
@@ -144,7 +143,7 @@ class Game:
             in player_scores.items()
             if not player.used_upper_categories.get(category, False)
         }
-        player.add_scores(valid_scores, "upper")
+        player.add_scores(new_scores = valid_scores, category = "upper")
         
         
     def play_lower(self, player: 'Player', roll: dict[str, int]) -> None:
@@ -185,9 +184,9 @@ class Game:
             player_scores['three_of_a_kind'] = sum(roll_values)
         if 4 in Counter(roll_counts).values():
             player_scores['four_of_a_kind'] = sum(roll_values)
-        if self.contains_straight(set(roll_values), type = 'small'):
+        if self.contains_straight(roll_vals = set(roll_values), type = 'small'):
             player_scores['small_straight'] = 30
-        if self.contains_straight(set(roll_values), type = 'large'):
+        if self.contains_straight(roll_vals = set(roll_values), type = 'large'):
             player_scores['large_straight'] = 40
             
         valid_scores = {
@@ -196,7 +195,7 @@ class Game:
             in player_scores.items()
             if not player.used_lower_categories.get(category, False)
         }
-        player.add_scores(valid_scores, "lower")
+        player.add_scores(new_scores = valid_scores, category = "lower")
 
 
     def play_round(self, player: 'Player') -> None:
