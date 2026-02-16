@@ -1,1 +1,4 @@
-when no options are availible, player must be notified and not score.
+- Present all unused options, even when scores are 0. Player must be able to choose which category to 'zero-out'
+- Decide whether to show hand before or after upper/lower category selection
+- Implement yahtzee bonus
+- Select options by some key, not by name (e.g. 'A' instead of 'chance')
